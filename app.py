@@ -10,37 +10,30 @@ if "messages" not in st.session_state:
 # Chat-Bubble unten rechts
 st.markdown("""
 <style>
-#chat-bubble {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 60px;
-    height: 60px;
-    background-color: #ff69b4;
-    border-radius: 50%;
-    text-align: center;
-    line-height: 60px;
-    font-weight: bold;
-    color: white;
-    cursor: pointer;
-    z-index: 1000;
-}
-#chat-window {
-    position: fixed;
-    bottom: 90px;
-    right: 20px;
-    width: 400px;
-    height: 500px;
-    background-color: white;
-    border: 2px solid #ff69b4;
-    border-radius: 10px;
-    padding: 10px;
-    overflow-y: auto;
-    display: none;
-    z-index: 999;
-}
-.user-msg { background-color:#ffe4e1; padding:5px 10px; border-radius:10px; margin-bottom:5px; text-align:right; }
-.bot-msg { background-color:#ffb6c1; padding:5px 10px; border-radius:10px; margin-bottom:5px; text-align:left; }
+  body { font-family: Arial, sans-serif; margin:0; }
+  /* Pinke Bubble */
+  #chat-bubble {
+    position: fixed; right: 20px; bottom: 20px; width: 62px; height: 62px;
+    border-radius: 50%; background: #ff4da6; color:#fff; display:flex;
+    align-items:center; justify-content:center; font-weight:700; cursor:pointer;
+    box-shadow:0 10px 30px rgba(255,77,166,.35); z-index: 9999; user-select:none;
+  }
+  /* Fenster */
+  #chatbox {
+    position: fixed; right: 20px; bottom: 92px; width: 360px; max-height: 70vh;
+    display:none; flex-direction:column; background:#fff; border-radius:14px;
+    box-shadow:0 18px 60px rgba(0,0,0,.18); overflow:hidden; z-index: 9999;
+  }
+  .header { background:#ff4da6; color:#fff; padding:12px 14px; font-weight:700; display:flex; justify-content:space-between; }
+  .messages { padding:12px; overflow:auto; flex:1; background:#fff6fb; }
+  .msg { margin: 8px 0; }
+  .bubble { display:inline-block; padding:8px 12px; border-radius:12px; max-width:80%; line-height:1.35; }
+  .bot   .bubble { background:#ffe1ef; color:#000; }
+  .user  .bubble { background:#ff4da6; color:#fff; float:right; }
+  .input { display:flex; border-top:1px solid #f0c6d9; }
+  #userInput { flex:1; padding:10px; border:0; outline:none; }
+  #sendBtn  { border:0; background:#ff4da6; color:#fff; padding:0 14px; cursor:pointer; }
+  .meta { font-size:12px; color:#7a4660; padding:6px 12px; background:#fff; border-top:1px dashed #f3c7dc; }
 </style>
 <div id="chat-bubble">F S</div>
 <div id="chat-window"></div>
