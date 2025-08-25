@@ -2,63 +2,101 @@ import streamlit as st
 import pandas as pd
 from chatbot import chatbot_response
 # -----------------------------
-# Streamlit-Seite konfigurieren
+# Seite konfigurieren
 # -----------------------------
 st.set_page_config(
     page_title="FS-KI-Chatbot",
     page_icon=":roboter:",
-    layout="centered"
-)
-st.title(":roboter: FS-KI-Chatbot")
-st.markdown(
-    "Stelle deine Fragen! Der Chatbot prüft zuerst unsere FAQs, "
-    "wenn nichts gefunden wird, nutzt er die KI."
+    layout="wide"
 )
 # -----------------------------
-# Session-State für Chatverlauf & FAQs
+# CSS für pinke Bubble
 # -----------------------------
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+st.markdown("""
+<style>
+#fs-chat-bubble {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background-color: #ff69b4;
+    border-radius: 50%;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    cursor: pointer;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+    font-size: 24px;
+}
+#fs-chat-window {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 400px;
+    height: 600px;
+    display: none;
+    z-index: 9999;
+    border: 2px solid #ff69b4;
+    border-radius: 10px;
+    background-color: white;
+    padding: 10px;
+    overflow-y: auto;
+}
+</style>
+""", unsafe_allow_html=True)
+# -----------------------------
+# FAQ-Daten laden
+# -----------------------------
 if "df" not in st.session_state:
     st.session_state.df = pd.read_csv("data/faq.csv")
 # -----------------------------
-# Upload-Funktion für neue FAQs
+# Session-State für Bubble & Chat
 # -----------------------------
-uploaded_file = st.file_uploader(
-    "Lade hier eine CSV mit neuen Fragen/Antworten hoch (frage,antwort)",
-    type="csv"
-)
-if uploaded_file:
-    try:
-        new_df = pd.read_csv(uploaded_file)
-        # Überprüfen, ob Spalten existieren
-        if "frage" in new_df.columns and "antwort" in new_df.columns:
-            st.session_state.df = pd.concat([st.session_state.df, new_df], ignore_index=True)
-            st.success("Datei erfolgreich hinzugefügt! Chatbot kann jetzt neue Fragen beantworten.")
-        else:
-            st.error("Die CSV muss genau die Spalten 'frage' und 'antwort' enthalten.")
-    except Exception as e:
-        st.error(f"Fehler beim Hochladen: {e}")
+if "chat_open" not in st.session_state:
+    st.session_state.chat_open = False
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 # -----------------------------
-# Chat-Nachrichten anzeigen
+# Bubble anzeigen
 # -----------------------------
-for msg in st.session_state.messages:
-    role = msg["role"]
-    st.chat_message(role).markdown(msg["content"])
+bubble_html = '<div id="fs-chat-bubble">F S</div>'
+st.markdown(bubble_html, unsafe_allow_html=True)
 # -----------------------------
-# Neue Nutzer-Eingabe
+# JS für Klick-Event auf Bubble
 # -----------------------------
-user_input = st.chat_input("Schreib deine Frage hier...")
-if user_input:
-    # User-Nachricht speichern und anzeigen
-    st.session_state.messages.append({"role": "user", "content": user_input})
-    st.chat_message("user").markdown(user_input)
-    # Antwort vom Chatbot
-    # Wir übergeben die aktuelle FAQ-Datenbank
-    try:
-        answer = chatbot_response(user_input, faq_df=st.session_state.df)
-    except Exception as e:
-        answer = f"Fehler bei der Antwort: {e}"
-    # Antwort speichern und anzeigen
-    st.session_state.messages.append({"role": "assistant", "content": answer})
-    st.chat_message("assistant").markdown(answer)
+st.markdown("""
+<script>
+const bubble = window.parent.document.getElementById('fs-chat-bubble');
+bubble.onclick = () => {
+    const chat = document.getElementById('fs-chat-window');
+    if(chat.style.display === 'none'){
+        chat.style.display = 'block';
+    } else {
+        chat.style.display = 'none';
+    }
+};
+</script>
+""", unsafe_allow_html=True)
+# -----------------------------
+# Chat-Fenster direkt in Streamlit
+# -----------------------------
+chat_container = st.container()
+with chat_container:
+    if st.session_state.chat_open:
+        st.markdown('<div id="fs-chat-window">', unsafe_allow_html=True)
+        for msg in st.session_state.messages:
+            if msg["role"] == "user":
+                st.markdown(f"**Du:** {msg['content']}")
+            else:
+                st.markdown(f"**FS:** {msg['content']}")
+        st.markdown('</div>', unsafe_allow_html=True)
+        user_input = st.text_input("Schreibe hier deine Frage:")
+        if user_input:
+            st.session_state.messages.append({"role": "user", "content": user_input})
+            answer = chatbot_response(user_input, st.session_state.df)
+            st.session_state.messages.append({"role": "assistant", "content": answer})
+            st.experimental_rerun()
