@@ -16,8 +16,8 @@ st.markdown("""
 /* Bubble */
 #fs-bubble {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: 50px;
+    right: 30px;
     width: 60px;
     height: 60px;
     background-color: #ff69b4;
@@ -35,9 +35,9 @@ st.markdown("""
 #fs-chat {
     position: fixed;
     bottom: 90px; /* direkt über der Bubble */
-    right: 20px;
-    width: 400px;
-    height: 500px;
+    right: 30px;
+    width: 300px;
+    height: 300px;
     background-color: white;
     border: 2px solid #ff69b4;
     border-radius: 10px;
