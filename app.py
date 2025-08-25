@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from chatbot import chatbot_response
 # Seite konfigurieren
-st.set_page_config(page_title="FS-KI-Chatbot", page_icon=":roboter:", layout="wide")
+st.set_page_config(page_title="Dein Fahrschulbot", page_icon=":roboter:", layout="wide")
 # FAQ laden
 df = pd.read_csv("data/faq.csv")
 # Session-State initialisieren
@@ -25,13 +25,13 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 # Bubble als Button rechts unten
-st.markdown("<div style='position: fixed; bottom: 20px; right: 20px;'>", unsafe_allow_html=True)
+st.markdown("<div style='position: fixed; bottom: 30px; right: 10px;'>", unsafe_allow_html=True)
 if st.button("F S"):
     st.session_state.chat_open = not st.session_state.chat_open
 st.markdown("</div>", unsafe_allow_html=True)
 # Chat-Fenster
 if st.session_state.chat_open:
-    st.markdown("<div style='position: fixed; bottom: 90px; right: 20px; width: 400px; height: 600px; background-color: white; border: 2px solid #ff69b4; border-radius: 10px; overflow-y: auto; padding:10px; z-index:9999;'>", unsafe_allow_html=True)
+    st.markdown("<div style='position: fixed; bottom: 40px; right: 30px; width: 200px; height: 400px; background-color: white; border: 2px solid #ff69b4; border-radius: 10px; overflow-y: auto; padding:10px; z-index:9999;'>", unsafe_allow_html=True)
     # Alte Nachrichten anzeigen
     for msg in st.session_state.messages:
         if msg["role"] == "user":
@@ -39,7 +39,7 @@ if st.session_state.chat_open:
         else:
             st.markdown(f"**FS:** {msg['content']}")
     # Neue Nachricht eingeben
-    user_input = st.text_input("Schreibe hier deine Frage:", key="input_field")
+    user_input = st.text_input("Hi, ich bin dein Fahrschulbot! Stell mir gerne eine Frage und ich werde dir weiterhelfen.", key="input_field")
     if user_input and st.button("Senden"):
         # Nachricht speichern
         st.session_state.messages.append({"role": "user", "content": user_input})
