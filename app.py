@@ -9,6 +9,10 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 # Chat-Bubble unten rechts
 st.markdown("""
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>F & S Chatbot</title>
 <style>
   body { font-family: Arial, sans-serif; margin:0; }
   /* Pinke Bubble */
@@ -35,6 +39,7 @@ st.markdown("""
   #sendBtn  { border:0; background:#ff4da6; color:#fff; padding:0 14px; cursor:pointer; }
   .meta { font-size:12px; color:#7a4660; padding:6px 12px; background:#fff; border-top:1px dashed #f3c7dc; }
 </style>
+</head>
 <div id="chat-bubble">F S</div>
 <div id="chat-window"></div>
 <script>
